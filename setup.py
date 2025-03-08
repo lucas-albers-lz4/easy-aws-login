@@ -10,23 +10,21 @@ import os
 from setuptools import find_packages, setup
 
 # Package meta-data.
-NAME = 'easy-aws-login'
-DESCRIPTION = 'The easiest way to log in to your AWS console.'
-URL = 'https://github.com/jeshan/easy-aws-login'
-EMAIL = 'j@jeshan.co'
-AUTHOR = 'Jeshan Babooa'
-REQUIRES_PYTHON = '>=3.9.0'
-VERSION = os.environ.get('CODE_VERSION')
+NAME = "easy-aws-login"
+DESCRIPTION = "The easiest way to log in to your AWS console."
+URL = "https://github.com/jeshan/easy-aws-login"
+EMAIL = "j@jeshan.co"
+AUTHOR = "Jeshan Babooa"
+REQUIRES_PYTHON = ">=3.9.0"
+VERSION = os.environ.get("CODE_VERSION")
 
 # What packages are required for this module to be executed?
-REQUIRED = [
-    'boto3', 'requests'
-]
+REQUIRED = ["boto3", "requests"]
 
 # What packages are optional?
 EXTRAS = {
-    'boto3 code assistance': ['botostubs'],
-    'clipboard': ['pyperclip'],
+    "boto3 code assistance": ["botostubs"],
+    "clipboard": ["pyperclip"],
 }
 
 # The rest you shouldn't have to touch too much :)
@@ -39,8 +37,8 @@ here = os.path.abspath(os.path.dirname(__file__))
 # Import the README and use it as the long-description.
 # Note: this will only work if 'README.md' is present in your MANIFEST.in file!
 try:
-    with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
-        long_description = '\n' + f.read()
+    with io.open(os.path.join(here, "README.md"), encoding="utf-8") as f:
+        long_description = "\n" + f.read()
 except FileNotFoundError:
     long_description = DESCRIPTION
 
@@ -48,18 +46,20 @@ except FileNotFoundError:
 about = {}
 if not VERSION:
     project_slug = NAME.lower().replace("-", "_").replace(" ", "_")
-    with open(os.path.join(here, project_slug, '__version__.py')) as f:
-        exec(f.read(), about)
+    with open(os.path.join(here, project_slug, "__version__.py")) as f:
+        version_line = f.read().strip()
+        # Parse the version from the file content
+        about["__version__"] = version_line.split("=")[1].strip().strip("\"'")
 else:
-    about['__version__'] = VERSION
+    about["__version__"] = VERSION
 
 # Where the magic happens:
 setup(
     name=NAME,
-    version=about['__version__'],
+    version=about["__version__"],
     description=DESCRIPTION,
     long_description=long_description,
-    long_description_content_type='text/markdown',
+    long_description_content_type="text/markdown",
     author=AUTHOR,
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
@@ -69,16 +69,16 @@ setup(
     install_requires=REQUIRED,
     extras_require=EXTRAS,
     include_package_data=True,
-    license='BSD-2-Clause',
+    license="BSD-2-Clause",
     classifiers=[
         # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
-        'License :: OSI Approved :: BSD License',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11',
-        'Programming Language :: Python :: 3.12',
+        "License :: OSI Approved :: BSD License",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
     ],
 )
