@@ -48,7 +48,7 @@ if not VERSION:
     project_slug = NAME.lower().replace("-", "_").replace(" ", "_")
     with open(os.path.join(here, project_slug, "__version__.py")) as f:
         version_line = f.read().strip()
-        # Parse the version from the file content
+        # Extract version from the string like '__version__ = "0.4"'
         about["__version__"] = version_line.split("=")[1].strip().strip("\"'")
 else:
     about["__version__"] = VERSION
