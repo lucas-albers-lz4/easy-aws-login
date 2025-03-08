@@ -1,5 +1,4 @@
 import json
-import sys
 import argparse
 from getpass import getuser
 from urllib.parse import quote_plus
@@ -25,7 +24,7 @@ def go(profile_name, duration, debug=False):
                 'Resource': '*'
             }]
         }))
-    except:
+    except Exception:
         role_arn = session._session._profile_map[profile_name]['role_arn']
         response = sts.assume_role(RoleSessionName=issuer, DurationSeconds=duration, RoleArn=role_arn)
     json_temp_credentials = json.dumps({'sessionId': response['Credentials']['AccessKeyId'],
@@ -40,7 +39,7 @@ def go(profile_name, duration, debug=False):
     sign_in_url = f"https://signin.aws.amazon.com/federation?Action=login&Issuer={issuer}&Destination={destination}&SigninToken={sign_in_token}"
     try:
         open_new_tab(sign_in_url)
-    except:
+    except Exception:
         print('Could not automatically open browser.')
         if debug:
             print('Debug mode: Sign-in URL:')
