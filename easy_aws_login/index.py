@@ -1,8 +1,9 @@
-import json
 import argparse
+import json
 from getpass import getuser
 from urllib.parse import quote_plus
 from webbrowser import open_new_tab
+import sys
 
 import boto3
 import requests
@@ -33,7 +34,14 @@ def go(profile_name, duration, debug=False):
 
     quote_session = quote_plus(json_temp_credentials)
     get_token_url = f"https://signin.aws.amazon.com/federation?Action=getSigninToken&Session={quote_session}"
-    sign_in_token = requests.get(get_token_url).json()['SigninToken']
+    try:
+        sign_in_token = requests.get(get_token_url, timeout=10).json()['SigninToken']
+    except requests.exceptions.Timeout:
+        print("Request to AWS federation service timed out. Please check your network connection and try again.")
+        sys.exit(1)
+    except requests.exceptions.RequestException as e:
+        print(f"Error connecting to AWS federation service: {e}")
+        sys.exit(1)
 
     destination = quote_plus('https://console.aws.amazon.com/')
     sign_in_url = f"https://signin.aws.amazon.com/federation?Action=login&Issuer={issuer}&Destination={destination}&SigninToken={sign_in_token}"
