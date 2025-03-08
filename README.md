@@ -23,6 +23,26 @@ to login with a profile and change the default session duration of 12 hours (432
 `easy-aws-login my-profile 7200`
 
 
+to see all available options, type:
+`easy-aws-login --help`
+
+
+## Command-line Options
+
+```
+usage: easy-aws-login [-h] [--debug] [profile] [duration]
+
+Easy AWS Login
+
+positional arguments:
+  profile     AWS profile name
+  duration    Session duration in seconds
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --debug     Enable debug mode (shows sensitive information)
+```
+
 ## Deployment
 This project is managed by AWS CodeBuild and the cloudformation template that drives it is found under [templates/deployment-pipeline.yaml](templates/deployment-pipeline.yaml). This is what a visualisation of it looks like:
 
