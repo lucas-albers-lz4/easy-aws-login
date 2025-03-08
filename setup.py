@@ -26,6 +26,7 @@ REQUIRED = [
 # What packages are optional?
 EXTRAS = {
     'boto3 code assistance': ['botostubs'],
+    'clipboard': ['pyperclip'],
 }
 
 # The rest you shouldn't have to touch too much :)

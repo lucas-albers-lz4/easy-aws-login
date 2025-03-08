@@ -1,5 +1,6 @@
 import json
 import sys
+import argparse
 from getpass import getuser
 from urllib.parse import quote_plus
 from webbrowser import open_new_tab
@@ -8,7 +9,7 @@ import boto3
 import requests
 
 
-def go(profile_name, duration):
+def go(profile_name, duration, debug=False):
     session = boto3.session.Session(profile_name=profile_name)
     sts = session.client('sts')
     issuer = f'{profile_name}-easy-aws-login'
@@ -40,16 +41,35 @@ def go(profile_name, duration):
     try:
         open_new_tab(sign_in_url)
     except:
-        print('Could not automatically open browser. Click the following link to sign in:')
-        print(sign_in_url)
+        print('Could not automatically open browser.')
+        if debug:
+            print('Debug mode: Sign-in URL:')
+            print(sign_in_url)
+        else:
+            print('For security reasons, the sign-in URL is not displayed.')
+            print('Run with --debug flag to view the URL if needed.')
+            try:
+                # Try to copy to clipboard if pyperclip is available
+                import pyperclip
+                pyperclip.copy(sign_in_url)
+                print('The sign-in URL has been copied to your clipboard.')
+            except ImportError:
+                print('Install pyperclip package to enable clipboard functionality:')
+                print('pip install pyperclip')
 
 
 def main():
-    profile_name = 'default' if len(sys.argv) < 2 else sys.argv[1]
-    duration = 3600 * 12 if len(sys.argv) < 3 else int(sys.argv[2])
-    if duration < 900:
+    parser = argparse.ArgumentParser(description='Easy AWS Login')
+    parser.add_argument('profile', nargs='?', default='default', help='AWS profile name')
+    parser.add_argument('duration', nargs='?', type=int, default=3600 * 12, help='Session duration in seconds')
+    parser.add_argument('--debug', action='store_true', help='Enable debug mode (shows sensitive information)')
+    
+    args = parser.parse_args()
+    
+    if args.duration < 900:
         raise Exception('Duration must be at least 900 seconds')
-    go(profile_name, duration)
+    
+    go(args.profile, args.duration, args.debug)
 
 
 if __name__ == '__main__':
