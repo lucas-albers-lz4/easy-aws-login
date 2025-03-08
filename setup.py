@@ -15,7 +15,7 @@ DESCRIPTION = 'The easiest way to log in to your AWS console.'
 URL = 'https://github.com/jeshan/easy-aws-login'
 EMAIL = 'j@jeshan.co'
 AUTHOR = 'Jeshan Babooa'
-REQUIRES_PYTHON = '>=3.6.0'
+REQUIRES_PYTHON = '>=3.12.0'
 VERSION = os.environ.get('CODE_VERSION')
 
 # What packages are required for this module to be executed?
