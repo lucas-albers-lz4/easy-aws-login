@@ -6,7 +6,7 @@ url = "https://pypi.org/simple"
 [packages]
 "boto3" = ">=1.9.133"
 requests = ">=2.31.0"
-urllib3 = ">=1.26.17,<1.27"
+urllib3 = ">=1.26.17,<2.4"
 
 [dev-packages]
 pyperclip = "*"
