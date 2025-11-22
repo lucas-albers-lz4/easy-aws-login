@@ -1,0 +1,32 @@
+[project]
+name = "easy-aws-login"
+dynamic = ["version"]
+requires-python = ">=3.10"
+dependencies = [
+"boto3==1.40.76",
+"requests==2.32.5",
+"urllib3==2.5.0"
+]
+
+[project.optional-dependencies]
+boto3-code-assistance = ["botostubs"]
+clipboard = ["pyperclip"]
+dev = [
+    "ruff>=0.9.7",
+    "isort>=5.13.2",
+    "bandit>=1.7.7",
+    "pre-commit",
+]
+
+[project.scripts]
+easy-aws-login = "easy_aws_login.index:main"
+
+[tool.setuptools]
+packages = ["easy_aws_login"]
+
+[tool.setuptools.dynamic]
+version = {attr = "easy_aws_login.__version__.__version__"}
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
