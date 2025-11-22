@@ -30,3 +30,12 @@ version = {attr = "easy_aws_login.__version__.__version__"}
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.ruff.lint]
+# Select rulesets - "ALL" includes many general best practices, "S" adds security checks
+select = ["ALL", "S"]
+# Disable T201 (print statements) - CLI tools should use print for user output
+# Disable incompatible docstring rules
+# Disable COM812 (trailing commas) - handled by formatter, causes conflicts
+ignore = ["T201", "D203", "D213", "COM812"]  # T201: print is OK for CLI, D203 conflicts with D211, D213 conflicts with D212, COM812 conflicts with formatter
+
