@@ -38,20 +38,22 @@ def go(profile_name, duration, debug=False):
                 {
                     "Version": "2012-10-17",
                     "Statement": [{"Action": "*", "Effect": "Allow", "Resource": "*"}],
-                }
+                },
             ),
         )
     except Exception:
         role_arn = session._session._profile_map[profile_name]["role_arn"]
         response = sts.assume_role(
-            RoleSessionName=issuer, DurationSeconds=duration, RoleArn=role_arn
+            RoleSessionName=issuer,
+            DurationSeconds=duration,
+            RoleArn=role_arn,
         )
     json_temp_credentials = json.dumps(
         {
             "sessionId": response["Credentials"]["AccessKeyId"],
             "sessionKey": response["Credentials"]["SecretAccessKey"],
             "sessionToken": response["Credentials"]["SessionToken"],
-        }
+        },
     )
 
     quote_session = quote_plus(json_temp_credentials)
@@ -60,7 +62,7 @@ def go(profile_name, duration, debug=False):
         sign_in_token = requests.get(get_token_url, timeout=10).json()["SigninToken"]
     except requests.exceptions.Timeout:
         print(
-            "Request to AWS federation service timed out. Please check your network connection and try again."
+            "Request to AWS federation service timed out. Please check your network connection and try again.",
         )
         sys.exit(1)
     except requests.exceptions.RequestException as e:
@@ -106,7 +108,10 @@ def go(profile_name, duration, debug=False):
 def main():
     parser = argparse.ArgumentParser(description="Easy AWS Login")
     parser.add_argument(
-        "profile", nargs="?", default="default", help="AWS profile name"
+        "profile",
+        nargs="?",
+        default="default",
+        help="AWS profile name",
     )
     parser.add_argument(
         "duration",
