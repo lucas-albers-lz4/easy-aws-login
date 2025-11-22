@@ -9,6 +9,8 @@ import boto3
 import requests
 from botocore.exceptions import NoCredentialsError, ProfileNotFound
 
+from easy_aws_login.__version__ import __version__
+
 
 def go(profile_name, duration, debug=False):
     try:
@@ -19,7 +21,8 @@ def go(profile_name, duration, debug=False):
         print("1. Verify the profile name in ~/.aws/config or ~/.aws/credentials")
         print("2. Ensure the profile is correctly configured")
         if debug:
-            print(f"Detailed error: {e}")
+            # Error details may contain sensitive info, send to stderr
+            print(f"Detailed error: {e}", file=sys.stderr)
         sys.exit(1)
 
     sts = session.client("sts")
@@ -61,7 +64,12 @@ def go(profile_name, duration, debug=False):
         )
         sys.exit(1)
     except requests.exceptions.RequestException as e:
-        print(f"Error connecting to AWS federation service: {e}")
+        # Error details may contain URLs or sensitive info, sanitize for non-debug
+        if debug:
+            print(f"Error connecting to AWS federation service: {e}", file=sys.stderr)
+        else:
+            print("Error connecting to AWS federation service.")
+            print("Run with --debug flag for detailed error information.")
         sys.exit(1)
 
     destination = quote_plus("https://console.aws.amazon.com/")
@@ -71,8 +79,16 @@ def go(profile_name, duration, debug=False):
     except Exception:
         print("Could not automatically open browser.")
         if debug:
-            print("Debug mode: Sign-in URL:")
-            print(sign_in_url)
+            print(
+                "WARNING: Debug mode enabled. The following URL contains sensitive credentials.",
+                file=sys.stderr,
+            )
+            print(
+                "This output is sent to stderr to reduce risk of logging. Use with caution.",
+                file=sys.stderr,
+            )
+            print("Debug mode: Sign-in URL:", file=sys.stderr)
+            print(sign_in_url, file=sys.stderr)
         else:
             print("For security reasons, the sign-in URL is not displayed.")
             print("Run with --debug flag to view the URL if needed.")
@@ -103,6 +119,12 @@ def main():
         "--debug",
         action="store_true",
         help="Enable debug mode (shows sensitive information)",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
+        help="Show program version and exit",
     )
 
     args = parser.parse_args()
