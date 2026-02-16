@@ -3,7 +3,7 @@ name = "easy-aws-login"
 dynamic = ["version"]
 requires-python = ">=3.10"
 dependencies = [
-"boto3==1.41.2",
+"boto3==1.42.49",
 "requests==2.32.5",
 "urllib3==2.5.0"
 ]
