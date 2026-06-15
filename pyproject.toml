@@ -4,8 +4,8 @@ dynamic = ["version"]
 requires-python = ">=3.10"
 dependencies = [
     "boto3>=1.42.53",
-    "requests>=2.32.5",
-    "urllib3>=2.6.3",
+    "requests>=2.33.0",
+    "urllib3>=2.7.0",
 ]
 
 [project.optional-dependencies]
