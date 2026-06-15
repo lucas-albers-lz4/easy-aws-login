@@ -212,7 +212,7 @@ requires-dist = [
     { name = "pyperclip", marker = "extra == 'clipboard'" },
     { name = "requests", specifier = ">=2.32.5" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.9.7" },
-    { name = "urllib3", specifier = ">=2.6.0" },
+    { name = "urllib3", specifier = ">=2.6.3" },
 ]
 provides-extras = ["boto3-code-assistance", "clipboard", "dev"]
 
