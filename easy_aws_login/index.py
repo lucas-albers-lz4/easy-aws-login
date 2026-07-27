@@ -2,7 +2,9 @@
 
 import argparse
 import json
+import os
 import sys
+import tempfile
 from getpass import getuser
 from urllib.parse import quote_plus
 from webbrowser import open_new_tab
@@ -104,6 +106,33 @@ def _create_signin_url(sign_in_token: str, issuer: str) -> str:
     )
 
 
+def _deliver_signin_url(sign_in_url: str) -> None:
+    """Hand the sign-in URL to the user without printing the secret.
+
+    Prefer clipboard. Fall back to a mode-0600 temp file and print only its path
+    (never the URL) so CodeQL clear-text logging stays clean.
+    """
+    if pyperclip:
+        pyperclip.copy(sign_in_url)
+        print("The sign-in URL has been copied to your clipboard.")
+        return
+
+    fd, path = tempfile.mkstemp(prefix="easy-aws-login-", suffix=".url")
+    try:
+        os.fchmod(fd, 0o600)
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            handle.write(sign_in_url)
+            handle.write("\n")
+    except Exception:
+        os.close(fd)
+        raise
+
+    print(
+        "Install pyperclip to copy the URL automatically "
+        f"(pip install pyperclip). URL written to {path} (mode 0600; delete after use).",
+    )
+
+
 def _open_browser_or_fallback(sign_in_url: str, *, debug: bool) -> None:
     """Open browser with sign-in URL or provide fallback instructions.
 
@@ -118,26 +147,13 @@ def _open_browser_or_fallback(sign_in_url: str, *, debug: bool) -> None:
         print("Could not automatically open browser.")
         if debug:
             print(
-                "WARNING: Debug mode enabled. The following URL contains "
-                "sensitive credentials.",
+                "WARNING: Debug mode enabled. Delivering the sign-in URL via "
+                "clipboard or a restricted temp file (the secret is not printed).",
                 file=sys.stderr,
             )
-            print(
-                "This output is sent to stderr to reduce risk of logging. "
-                "Use with caution.",
-                file=sys.stderr,
-            )
-            print("Debug mode: Sign-in URL:", file=sys.stderr)
-            print(sign_in_url, file=sys.stderr)
         else:
             print("For security reasons, the sign-in URL is not displayed.")
-            print("Run with --debug flag to view the URL if needed.")
-            if pyperclip:
-                pyperclip.copy(sign_in_url)
-                print("The sign-in URL has been copied to your clipboard.")
-            else:
-                print("Install pyperclip package to enable clipboard functionality:")
-                print("pip install pyperclip")
+        _deliver_signin_url(sign_in_url)
 
 
 def go(profile_name: str, duration: int, *, debug: bool = False) -> None:
@@ -239,7 +255,7 @@ def main() -> None:
     parser.add_argument(
         "--debug",
         action="store_true",
-        help="Enable debug mode (shows sensitive information)",
+        help="Enable debug mode (extra diagnostics; secrets are never printed)",
     )
     parser.add_argument(
         "--version",
