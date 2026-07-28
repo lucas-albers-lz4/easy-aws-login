@@ -16,5 +16,9 @@ repos:
       hooks:
         - id: bandit
           args: ["-x", "./venv"]
+    - repo: https://github.com/gitleaks/gitleaks
+      rev: v8.30.1
+      hooks:
+        - id: gitleaks
 
 # Optional: create a pyproject.toml for tool configuration
