@@ -77,7 +77,7 @@ def _get_aws_credentials(
         # Note: boto3 doesn't provide a public API to get role_arn from profile config.
         # We access the internal profile_map as a workaround.
         # The `_profile_map` structure has been stable across boto3 versions
-        # This is a workaround necessary until boto3 provides a public API for this use case.
+        # Workaround until boto3 exposes a public API for this use case.
         role_arn = session._session._profile_map[profile_name]["role_arn"]  # noqa: SLF001
         response = sts.assume_role(
             RoleSessionName=issuer,
@@ -129,7 +129,8 @@ def _deliver_signin_url(sign_in_url: str) -> None:
 
     print(
         "Install pyperclip to copy the URL automatically "
-        f"(pip install pyperclip). URL written to {path} (mode 0600; delete after use).",
+        f"(pip install pyperclip). URL written to {path} "
+        "(mode 0600; delete after use).",
     )
 
 
